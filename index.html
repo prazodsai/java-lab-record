@@ -5,12 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Lab Record | M.PRAZOD SAI</title>
     <style>
-        /* Base Theme & Font Integration */
-        @font-face {
-            font-family: 'BankGothic Md BT';
-            src: local('BankGothic Md BT'), local('BankGothic');
-            /* Fallback in case local font isn't installed */
-        }
+        /* Import a web-safe BankGothic alternative just in case */
+        @import url('https://fonts.googleapis.com/css2?family=Michroma&display=swap');
         
         :root {
             --bg-dark: #121212;
@@ -24,11 +20,14 @@
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
-            font-family: 'BankGothic Md BT', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Prioritize your local BankGothic, fallback to Michroma */
+            font-family: 'BankGothic Md BT', 'BankGothic', 'Michroma', sans-serif;
+            text-transform: uppercase; /* This gives it the classic BankGothic small-caps look */
             margin: 0;
             padding: 0;
             line-height: 1.6;
             overflow-x: hidden;
+            letter-spacing: 1px;
         }
 
         /* Header Styling */
@@ -41,28 +40,27 @@
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 0.5rem;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: #ffffff;
-            text-transform: uppercase;
         }
 
         .course-code {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             color: var(--accent);
             margin-bottom: 1.5rem;
             letter-spacing: 4px;
         }
 
         .student-info {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: var(--text-muted);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
         .student-info strong {
@@ -116,20 +114,22 @@
             color: var(--accent);
             border-bottom: 1px solid #333;
             padding-bottom: 10px;
+            font-size: 1.2rem;
         }
 
         .card p {
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             margin-bottom: 15px;
         }
 
         .card .concepts {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             background: #2a2a2a;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 20px;
+            line-height: 1.8;
         }
 
         /* Buttons */
@@ -137,13 +137,14 @@
             display: inline-block;
             background-color: var(--accent);
             color: #fff;
-            padding: 10px 20px;
+            padding: 12px 20px;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: background-color 0.3s ease;
             text-align: center;
             width: calc(100% - 40px);
+            letter-spacing: 1px;
         }
 
         .btn:hover {
@@ -165,9 +166,10 @@
             text-align: center;
             padding: 2rem;
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             border-top: 1px solid #333;
             margin-top: 3rem;
+            letter-spacing: 2px;
         }
     </style>
 </head>
