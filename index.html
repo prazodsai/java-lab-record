@@ -47,11 +47,11 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 800px; /* Increased size */
-            height: 800px;
-            margin-left: -400px; 
-            margin-top: -400px;
-            /* Intensified the core glow */
+            width: 650px; /* Changed to 650px */
+            height: 650px; /* Changed to 650px */
+            margin-left: -325px; /* Half of 650px for perfect centering */
+            margin-top: -325px;
+            /* Maintained intense core glow */
             background: radial-gradient(circle, rgba(74, 144, 226, 0.35) 0%, rgba(74, 144, 226, 0.08) 40%, transparent 70%);
             border-radius: 50%;
             pointer-events: none; 
@@ -317,7 +317,7 @@
     <!-- Ambient Cursor Glow Element -->
     <div class="cursor-glow"></div>
 
-    <header>
+    <header id="main-header">
         <h1>Java Lab Record</h1>
         <div class="course-code">24CS281</div>
         <div class="student-info">
@@ -516,6 +516,7 @@
     <!-- Scripts -->
     <script>
         // Full Page Transition Logic
+        const mainHeader = document.getElementById('main-header');
         const mainGrid = document.getElementById('main-grid');
         const fullPageView = document.getElementById('full-page-view');
         const fullPageContent = document.getElementById('full-page-content');
@@ -529,12 +530,13 @@
             fullPageContent.innerHTML = `<h2>${title}</h2>${detailsHtml}`;
             
             // Swap visibility
+            mainHeader.style.display = 'none';
             mainGrid.style.display = 'none';
             fullPageView.style.display = 'block';
             
             // Optional: Scroll to the top of the container smoothly
             window.scrollTo({
-                top: document.querySelector('.container').offsetTop - 20,
+                top: 0,
                 behavior: 'smooth'
             });
         }
@@ -543,6 +545,7 @@
             // Swap visibility back to grid
             fullPageView.style.display = 'none';
             mainGrid.style.display = 'grid';
+            mainHeader.style.display = 'block';
             
             // Clear content
             fullPageContent.innerHTML = '';
