@@ -111,6 +111,9 @@
             animation: fadeInUp 0.8s ease-out forwards;
             opacity: 0;
             transform: translateY(20px);
+            /* Prevents text overflow on all cards */
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         /* Staggered Animation Delays */
@@ -145,6 +148,8 @@
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-bottom: 15px;
+            overflow-wrap: break-word;
+            word-break: break-word;
         }
 
         /* Inner Glass Box for Concepts */
@@ -156,6 +161,10 @@
             border-radius: 8px;
             margin-bottom: 20px;
             line-height: 1.8;
+            /* Guarantees long concatenated strings fit inside box */
+            overflow-wrap: break-word;
+            word-break: break-word;
+            hyphens: auto;
         }
 
         /* Button Layout */
@@ -250,7 +259,7 @@
                 <h2>Week 1</h2>
                 <p><strong>Aim:</strong> Introduction to Java installation, execution, and basic programming language comparisons.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Language Comparisons (Java vs C/C++/Python/JS), JDK Configuration, Hello World Execution.
+                    <strong>Concepts:</strong> Language Comparisons (Java vs C / C++ / Python / JS), JDK Configuration, Hello World Execution.
                 </div>
                 <div class="button-group">
                     <a href="week-01.pdf" target="_blank" class="btn">Open Document</a>
@@ -263,7 +272,7 @@
                 <h2>Week 2</h2>
                 <p><strong>Aim:</strong> To perform foundational Java operations including variables, arithmetic, and control flow.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Primitive Data Types, Arithmetic Operations, Type Casting (Widening/Narrowing), ASCII Conversions, Even/Odd Logic, For Loops.
+                    <strong>Concepts:</strong> Primitive Data Types, Arithmetic Operations, Type Casting (Widening / Narrowing), ASCII Conversions, Even / Odd Logic, For Loops.
                 </div>
                 <div class="button-group">
                     <a href="week-02.pdf" target="_blank" class="btn">Open Document</a>
@@ -276,7 +285,7 @@
                 <h2>Week 3</h2>
                 <p><strong>Aim:</strong> To understand Class fundamentals, object declaration, and method implementation.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Student/Employee Information Systems, Object Reference Variables, Array of Objects, Calculator Methods, Rectangle Operations.
+                    <strong>Concepts:</strong> Student / Employee Information Systems, Object Reference Variables, Array of Objects, Calculator Methods, Rectangle Operations.
                 </div>
                 <div class="button-group">
                     <a href="week-03.pdf" target="_blank" class="btn">Open Document</a>
@@ -289,7 +298,7 @@
                 <h2>Week 4</h2>
                 <p><strong>Aim:</strong> To implement constructors, method overloading, and observe Garbage Collection.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Default/Parameterized Constructors, Constructor Chaining, 'this' Keyword, Overloading Arithmetic & Area Methods, Object Eligibility for GC.
+                    <strong>Concepts:</strong> Default / Parameterized Constructors, Constructor Chaining, 'this' Keyword, Overloading Arithmetic & Area Methods, Object Eligibility for GC.
                 </div>
                 <div class="button-group">
                     <a href="week-04.pdf" target="_blank" class="btn">Open Document</a>
@@ -302,7 +311,7 @@
                 <h2>Week 5</h2>
                 <p><strong>Aim:</strong> To work with objects as parameters/returns and understand static behaviors.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Passing/Comparing Objects, Returning Objects (BankAccount), Static Variables (Student Count), Static Methods (Utility Math).
+                    <strong>Concepts:</strong> Passing / Comparing Objects, Returning Objects (BankAccount), Static Variables (Student Count), Static Methods (Utility Math).
                 </div>
                 <div class="button-group">
                     <a href="week-05.pdf" target="_blank" class="btn">Open Document</a>
@@ -315,7 +324,7 @@
                 <h2>Week 6</h2>
                 <p><strong>Aim:</strong> To introduce the final keyword and implement various types of Inner Classes.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> Final Variables/Methods/Classes, Blank Final Variables, Static Inner Classes (College.Department), Non-Static Inner Classes (Student.Address, Library.Book).
+                    <strong>Concepts:</strong> Final Variables / Methods / Classes, Blank Final Variables, Static Inner Classes (College.Department), Non-Static Inner Classes (Student.Address, Library.Book).
                 </div>
                 <div class="button-group">
                     <a href="week-06.pdf" target="_blank" class="btn">Open Document</a>
@@ -328,7 +337,7 @@
                 <h2>Week 7</h2>
                 <p><strong>Aim:</strong> To explore String handling utilities and introduce basic Inheritance.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> String Constructors, Literal vs New Keyword, StringBuffer Class (Append/Insert/Replace), StringTokenizer Class, Basic Inheritance (Person -> Student).
+                    <strong>Concepts:</strong> String Constructors, Literal vs New Keyword, StringBuffer Class (Append / Insert / Replace), StringTokenizer Class, Basic Inheritance (Person -> Student).
                 </div>
                 <div class="button-group">
                     <a href="week-07.pdf" target="_blank" class="btn">Open Document</a>
@@ -341,7 +350,7 @@
                 <h2>Week 8</h2>
                 <p><strong>Aim:</strong> To implement advanced Inheritance, method overriding, and Dynamic Method Dispatch.</p>
                 <div class="concepts">
-                    <strong>Concepts:</strong> 'super' Keyword, Multilevel Inheritance (Salary Calculation), Method Overriding (Animal Sounds), Dynamic Method Dispatch (Bank Accounts/Shapes).
+                    <strong>Concepts:</strong> 'super' Keyword, Multilevel Inheritance (Salary Calculation), Method Overriding (Animal Sounds), Dynamic Method Dispatch (Bank Accounts / Shapes).
                 </div>
                 <div class="button-group">
                     <a href="week-08.pdf" target="_blank" class="btn">Open Document</a>
