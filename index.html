@@ -28,6 +28,11 @@
             line-height: 1.6;
             overflow-x: hidden;
             letter-spacing: 1px;
+
+            /* Flexbox setup to keep footer at the bottom */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Header Styling */
@@ -72,6 +77,9 @@
             max-width: 1000px;
             margin: 3rem auto;
             padding: 0 20px;
+            flex: 1; /* Pushes footer to bottom if page content is short */
+            width: 100%;
+            box-sizing: border-box;
         }
 
         /* Grid for Weeks */
@@ -102,6 +110,9 @@
         .card:nth-child(6) { animation-delay: 0.6s; }
         .card:nth-child(7) { animation-delay: 0.7s; }
         .card:nth-child(8) { animation-delay: 0.8s; }
+        .card:nth-child(9) { animation-delay: 0.9s; }
+        .card:nth-child(10) { animation-delay: 1.0s; }
+        .card:nth-child(11) { animation-delay: 1.1s; }
 
         .card:hover {
             transform: translateY(-5px);
@@ -183,6 +194,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Footer Styling */
         footer {
             text-align: center;
             padding: 2rem;
@@ -191,6 +203,8 @@
             border-top: 1px solid #333;
             margin-top: 3rem;
             letter-spacing: 2px;
+            width: 100%;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -314,7 +328,7 @@
                 </div>
             </div>
 
-             <!-- Week 9 -->
+            <!-- Week 9 -->
             <div class="card">
                 <h2>Week 9</h2>
                 <p><strong>Aim:</strong> To organise and reuse Java code using packages and to achieve abstraction and polymorphism using interfaces.</p>
@@ -333,24 +347,28 @@
                 <p><strong>Aim:</strong> Practice implementing error-handling and file I/O operations in Java.</p>
                 <div class="concepts">
                     <strong>Concepts:</strong> The key concepts are Java exception management (including try-catch, propagation, and custom exceptions) and byte-stream file manipulation.
+                </div>
                 <div class="button-group">
                     <a href="week-10.pdf" target="_blank" class="btn">Open Document</a>
                     <a href="week-10.pdf" download class="btn btn-secondary">Download PDF</a>
                 </div>
             </div>
-        </div> 
+
             <!-- Week 11 -->
             <div class="card">
                 <h2>Week 11</h2>
                 <p><strong>Aim:</strong> To perform file handling and multithreading in Java using character streams and the Thread class.</p>
                 <div class="concepts">
                     <strong>Concepts:</strong> Reader and Writer, FileReader, FileWriter, file copying, counting characters, words and lines, the main thread, creating threads with Thread and Runnable, concurrent execution, isAlive() and join().
+                </div>
                 <div class="button-group">
                     <a href="Week-11.pdf" target="_blank" class="btn">Open Document</a>
                     <a href="Week-11.pdf" download class="btn btn-secondary">Download PDF</a>
                 </div>
             </div>
-        </div>
+
+        </div> <!-- End of .grid -->
+    </div> <!-- End of .container -->
 
     <footer>
         &copy; 2026 M.PRAZOD SAI | Siddhartha Academy of Higher Education
