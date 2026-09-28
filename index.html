@@ -42,22 +42,23 @@
             min-height: 100vh;
         }
 
-        /* --- ENHANCED: Dynamic Cursor Glow --- */
+        /* --- ADAPTIVE: Softer, Ambient Cursor Glow --- */
         .cursor-glow {
             position: fixed;
             top: 0;
             left: 0;
-            width: 650px; /* Changed to 650px */
-            height: 650px; /* Changed to 650px */
-            margin-left: -325px; /* Half of 650px for perfect centering */
+            width: 650px; 
+            height: 650px; 
+            margin-left: -325px; 
             margin-top: -325px;
-            /* Maintained intense core glow */
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.35) 0%, rgba(74, 144, 226, 0.08) 40%, transparent 70%);
+            /* Reduced core alpha to 0.12 for a subtle, adaptive ambient light */
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.12) 0%, rgba(74, 144, 226, 0.03) 40%, transparent 65%);
             border-radius: 50%;
             pointer-events: none; 
             z-index: 0; 
             mix-blend-mode: screen; 
             will-change: transform;
+            transition: opacity 0.3s ease;
         }
 
         /* Ensure main layout sections sit above the glow */
@@ -163,7 +164,6 @@
             margin: 0;
             color: var(--accent);
             font-size: 1.4rem;
-            /* Prevents WEEK 10/11 from wrapping to a new line */
             white-space: nowrap; 
         }
 
@@ -522,19 +522,15 @@
         const fullPageContent = document.getElementById('full-page-content');
 
         function openWeek(element) {
-            // Extract content from clicked card
             const title = element.querySelector('h2').innerText;
             const detailsHtml = element.querySelector('.week-details').innerHTML;
             
-            // Populate the full page container
             fullPageContent.innerHTML = `<h2>${title}</h2>${detailsHtml}`;
             
-            // Swap visibility
             mainHeader.style.display = 'none';
             mainGrid.style.display = 'none';
             fullPageView.style.display = 'block';
             
-            // Optional: Scroll to the top of the container smoothly
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
@@ -542,12 +538,10 @@
         }
 
         function closeWeek() {
-            // Swap visibility back to grid
             fullPageView.style.display = 'none';
             mainGrid.style.display = 'grid';
             mainHeader.style.display = 'block';
             
-            // Clear content
             fullPageContent.innerHTML = '';
         }
 
@@ -558,6 +552,15 @@
         let mouseY = window.innerHeight / 2;
         let glowX = mouseX;
         let glowY = mouseY;
+
+        // Optional: Fade out glow when mouse leaves the window
+        document.addEventListener('mouseleave', () => {
+            cursorGlow.style.opacity = '0';
+        });
+        
+        document.addEventListener('mouseenter', () => {
+            cursorGlow.style.opacity = '1';
+        });
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
@@ -571,7 +574,6 @@
             requestAnimationFrame(animateGlow);
         }
         
-        // Disable glow animation on touch devices to save battery
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (!isTouchDevice) {
             animateGlow();
