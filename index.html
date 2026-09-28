@@ -42,6 +42,29 @@
             min-height: 100vh;
         }
 
+        /* --- NEW: Dynamic Cursor Glow --- */
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 600px;
+            height: 600px;
+            margin-left: -300px; /* Centers the 600px circle on the cursor */
+            margin-top: -300px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.25) 0%, rgba(74, 144, 226, 0.05) 30%, transparent 60%);
+            border-radius: 50%;
+            pointer-events: none; /* Prevents the glow from blocking clicks */
+            z-index: 0; /* Placed behind the glass elements for adaptive blurring */
+            mix-blend-mode: screen; /* Blends dynamically with the dark background */
+            will-change: transform;
+        }
+
+        /* Ensure main layout sections sit above the glow to utilize backdrop-filter */
+        header, .container, footer {
+            position: relative;
+            z-index: 1;
+        }
+
         /* Header with Frosted Glass Effect */
         header {
             text-align: center;
@@ -240,6 +263,9 @@
 </head>
 <body>
 
+    <!-- Ambient Cursor Glow Element -->
+    <div class="cursor-glow"></div>
+
     <header>
         <h1>Java Lab Record</h1>
         <div class="course-code">24CS281</div>
@@ -404,5 +430,36 @@
         &copy; 2026 M.PRAZOD SAI | Siddhartha Academy of Higher Education
     </footer>
 
+    <!-- Script for Smooth Trailing Cursor Glow -->
+    <script>
+        const cursorGlow = document.querySelector('.cursor-glow');
+        
+        // Start glow in center
+        let mouseX = window.innerWidth / 2;
+        let mouseY = window.innerHeight / 2;
+        let glowX = mouseX;
+        let glowY = mouseY;
+
+        // Track actual mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Animate the glow towards the mouse for a smooth trailing effect
+        function animateGlow() {
+            // Easing formula (0.1 = responsiveness, closer to 1 is faster)
+            glowX += (mouseX - glowX) * 0.15;
+            glowY += (mouseY - glowY) * 0.15;
+            
+            // Highly performant translation using translate3d
+            cursorGlow.style.transform = `translate3d(${glowX}px, ${glowY}px, 0)`;
+            
+            requestAnimationFrame(animateGlow);
+        }
+        
+        // Initialize animation loop
+        animateGlow();
+    </script>
 </body>
 </html>
