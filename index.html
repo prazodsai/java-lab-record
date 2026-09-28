@@ -42,16 +42,17 @@
             min-height: 100vh;
         }
 
-        /* Dynamic Cursor Glow */
+        /* --- ENHANCED: Dynamic Cursor Glow --- */
         .cursor-glow {
             position: fixed;
             top: 0;
             left: 0;
-            width: 600px;
-            height: 600px;
-            margin-left: -300px; 
-            margin-top: -300px;
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.25) 0%, rgba(74, 144, 226, 0.05) 30%, transparent 60%);
+            width: 800px; /* Increased size */
+            height: 800px;
+            margin-left: -400px; 
+            margin-top: -400px;
+            /* Intensified the core glow */
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.35) 0%, rgba(74, 144, 226, 0.08) 40%, transparent 70%);
             border-radius: 50%;
             pointer-events: none; 
             z-index: 0; 
@@ -114,10 +115,10 @@
             box-sizing: border-box;
         }
 
-        /* Grid for Weeks (Adjusted for compact tiles) */
+        /* Grid for Weeks */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
             gap: 20px;
         }
 
@@ -162,6 +163,8 @@
             margin: 0;
             color: var(--accent);
             font-size: 1.4rem;
+            /* Prevents WEEK 10/11 from wrapping to a new line */
+            white-space: nowrap; 
         }
 
         /* Hide details in grid view */
@@ -169,115 +172,93 @@
             display: none;
         }
 
-        /* --- Detail Modal View (The "New Page") --- */
-        .page-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(10, 12, 16, 0.85);
+        /* --- Full Page View Styling --- */
+        #full-page-view {
+            display: none;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-glass);
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: #fff;
+            border-color: var(--accent);
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .full-page-content {
+            background: var(--bg-glass);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .page-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .detail-card {
-            background: var(--bg-glass);
             border-radius: 12px;
             padding: 40px;
             border: 1px solid var(--border-glass);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            opacity: 0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
         }
 
-        .page-overlay.active .detail-card {
-            /* Uses the same animation as the tiles */
-            animation: fadeInUp 0.5s ease-out forwards;
-            animation-delay: 0.1s;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 2rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            line-height: 1;
-            padding: 0;
-        }
-
-        .close-btn:hover {
-            color: #fff;
-        }
-
-        .detail-card h2 {
+        .full-page-content h2 {
             margin-top: 0;
             color: var(--accent);
             border-bottom: 1px solid var(--border-glass);
             padding-bottom: 15px;
-            font-size: 2rem;
-            margin-bottom: 25px;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
         }
 
-        .detail-card p {
-            font-size: 0.95rem;
+        .full-page-content p {
+            font-size: 1.1rem;
             color: var(--text-muted);
-            margin-bottom: 20px;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            line-height: 1.6;
+            margin-bottom: 25px;
+            line-height: 1.8;
         }
 
-        .detail-card .concepts {
-            font-size: 0.85rem;
+        .full-page-content .concepts {
+            font-size: 1rem;
             background: var(--bg-concepts);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 18px;
+            padding: 25px;
             border-radius: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             line-height: 1.8;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
         }
 
-        /* Button Layout in Modal */
-        .button-group {
+        /* Button Layout in Full Page */
+        .full-page-content .button-group {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-direction: row;
+            gap: 20px;
             width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .full-page-content .button-group {
+                flex-direction: column;
+            }
         }
 
         .btn {
             display: block;
+            flex: 1;
             background-color: var(--accent);
             color: #fff;
-            padding: 14px 20px;
+            padding: 16px 20px;
             text-decoration: none;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: all 0.3s ease;
             text-align: center;
             letter-spacing: 1px;
@@ -288,13 +269,13 @@
         .btn:hover {
             background-color: var(--accent-hover);
             border-color: var(--accent-hover);
-            box-shadow: 0 0 15px rgba(74, 144, 226, 0.4);
+            box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
         }
 
         .btn-secondary {
             background-color: transparent;
             color: var(--accent);
-            border-color: rgba(74, 144, 226, 0.3);
+            border-color: rgba(74, 144, 226, 0.4);
         }
 
         .btn-secondary:hover {
@@ -348,7 +329,9 @@
     </header>
 
     <div class="container">
-        <div class="grid">
+        
+        <!-- Grid View -->
+        <div class="grid" id="main-grid">
             
             <!-- Week 1 -->
             <div class="card" onclick="openWeek(this)">
@@ -514,19 +497,16 @@
                     </div>
                 </div>
             </div>
-
         </div>
-    </div>
 
-    <!-- Detail View Modal Overlay -->
-    <div id="page-overlay" class="page-overlay">
-        <div class="detail-card">
-            <button class="close-btn" onclick="closeWeek()">&times;</button>
-            <h2 id="detail-title">Week Title</h2>
-            <div id="detail-container">
+        <!-- Full Page Detail View -->
+        <div id="full-page-view">
+            <button class="btn-back" onclick="closeWeek()">← Back to Weeks</button>
+            <div class="full-page-content" id="full-page-content">
                 <!-- Content injected via JS -->
             </div>
         </div>
+
     </div>
 
     <footer>
@@ -535,45 +515,40 @@
 
     <!-- Scripts -->
     <script>
-        // Modal / "New Page" Logic
-        const overlay = document.getElementById('page-overlay');
-        const detailTitle = document.getElementById('detail-title');
-        const detailContainer = document.getElementById('detail-container');
+        // Full Page Transition Logic
+        const mainGrid = document.getElementById('main-grid');
+        const fullPageView = document.getElementById('full-page-view');
+        const fullPageContent = document.getElementById('full-page-content');
 
         function openWeek(element) {
             // Extract content from clicked card
             const title = element.querySelector('h2').innerText;
             const detailsHtml = element.querySelector('.week-details').innerHTML;
             
-            // Populate modal
-            detailTitle.innerText = title;
-            detailContainer.innerHTML = detailsHtml;
+            // Populate the full page container
+            fullPageContent.innerHTML = `<h2>${title}</h2>${detailsHtml}`;
             
-            // Show modal
-            overlay.classList.add('active');
+            // Swap visibility
+            mainGrid.style.display = 'none';
+            fullPageView.style.display = 'block';
+            
+            // Optional: Scroll to the top of the container smoothly
+            window.scrollTo({
+                top: document.querySelector('.container').offsetTop - 20,
+                behavior: 'smooth'
+            });
         }
 
         function closeWeek() {
-            // Hide modal
-            overlay.classList.remove('active');
+            // Swap visibility back to grid
+            fullPageView.style.display = 'none';
+            mainGrid.style.display = 'grid';
             
-            // Optional: clear content after delay to reset state
-            setTimeout(() => {
-                if (!overlay.classList.contains('active')) {
-                    detailTitle.innerText = '';
-                    detailContainer.innerHTML = '';
-                }
-            }, 300);
+            // Clear content
+            fullPageContent.innerHTML = '';
         }
 
-        // Close when clicking outside the detail card
-        overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) {
-                closeWeek();
-            }
-        });
-
-        // Cursor Glow Logic (Original)
+        // Cursor Glow Logic
         const cursorGlow = document.querySelector('.cursor-glow');
         
         let mouseX = window.innerWidth / 2;
@@ -593,7 +568,13 @@
             requestAnimationFrame(animateGlow);
         }
         
-        animateGlow();
+        // Disable glow animation on touch devices to save battery
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+            animateGlow();
+        } else {
+            cursorGlow.style.display = 'none';
+        }
     </script>
 </body>
 </html>
