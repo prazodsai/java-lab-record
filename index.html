@@ -42,6 +42,31 @@
             min-height: 100vh;
         }
 
+        /* --- NEW: Moving Java Background Logo --- */
+        .bg-java-logo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            margin-top: -400px;
+            margin-left: -400px;
+            opacity: 0.03; /* Extremely subtle so it doesn't distract */
+            z-index: 0;
+            pointer-events: none;
+            /* Turns the colored logo into a monochrome, bright shape */
+            filter: grayscale(100%) brightness(200%);
+            animation: floatAndRotate 60s infinite ease-in-out;
+            will-change: transform;
+        }
+
+        @keyframes floatAndRotate {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(40px, -60px) rotate(8deg) scale(1.05); }
+            66% { transform: translate(-50px, 30px) rotate(-5deg) scale(0.95); }
+            100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+        }
+
         /* --- ADAPTIVE: Softer, Ambient Cursor Glow --- */
         .cursor-glow {
             position: fixed;
@@ -61,7 +86,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Ensure main layout sections sit above the glow */
+        /* Ensure main layout sections sit above the background elements */
         header, .container, footer {
             position: relative;
             z-index: 1;
@@ -313,6 +338,9 @@
     </style>
 </head>
 <body>
+
+    <!-- Moving Background Logo -->
+    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java Background" class="bg-java-logo">
 
     <!-- Ambient Cursor Glow Element -->
     <div class="cursor-glow"></div>
