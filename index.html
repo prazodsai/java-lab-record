@@ -79,7 +79,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Canvas Overlay for Swarming Sand Particles */
+        /* Canvas Overlay for Fine Sand Swarm */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -109,9 +109,8 @@
             justify-items: start;
             margin: 0 auto;
             pointer-events: auto; 
-            /* Transformation origin center for uniform shredding */
             transform-origin: center center;
-            will-change: transform, opacity, filter, letter-spacing;
+            will-change: transform, opacity, filter;
         }
 
         .title-group {
@@ -174,10 +173,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 25px;
-            padding-top: 25vh; /* Pushed down slightly to give sand travel time */
+            padding-top: 25vh; 
         }
 
-        /* Scroll-Linked Cards (Solid Formation, No Blur) */
+        /* Scroll-Linked Cards (Materialize strictly via sand accumulation) */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -188,16 +187,15 @@
             text-align: center;
             cursor: pointer;
             
-            /* CSS Variables updated strictly via Scroll JS */
             --reveal-opacity: 0;
-            --reveal-scale: 0.95;
+            --reveal-scale: 0.92;
             --hover-y: 0px;
             
             opacity: var(--reveal-opacity);
             transform: translateY(var(--hover-y)) scale(var(--reveal-scale));
             
             transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, 
-                        transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+                        transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
         }
 
         .card:hover {
@@ -534,7 +532,6 @@
 
     <!-- Scripts -->
     <script>
-        // --- 1. Target-Interpolated Swarm Engine ---
         const headerWrapper = document.querySelector('.header-wrapper');
         const cards = Array.from(document.querySelectorAll('.card'));
         let lastScrollY = window.scrollY;
@@ -550,47 +547,42 @@
         resizeCanvas();
 
         let particles = [];
-
-        // Linear interpolation function
         const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
 
-        class SwarmParticle {
+        class FineSandParticle {
             constructor(startX, startY, targetX, targetY) {
                 this.startX = startX;
                 this.startY = startY;
                 this.targetX = targetX;
                 this.targetY = targetY;
                 
-                this.progress = 0; // 0 to 1 life cycle
-                this.speed = Math.random() * 0.015 + 0.01; // Travel speed
+                this.progress = 0; 
+                this.speed = Math.random() * 0.02 + 0.012; 
                 
-                // Turbulence properties for sweeping sand effect
-                this.seed = Math.random() * 100;
-                this.spread = Math.random() * 120 + 30; // How wide they loop around
+                this.seed = Math.random() * 50;
+                this.spread = Math.random() * 80 + 20; 
                 
-                this.size = Math.random() * 2 + 0.8;
-                this.color = Math.random() > 0.6 ? '255,255,255' : '74,144,226';
+                // Extremely fine sand sizing (0.4px to 1.2px)
+                this.size = Math.random() * 0.8 + 0.4; 
+                // Soft muted sand color palette (White, Pale Gold, Steel Blue)
+                const palettes = ['255,255,255', '212,175,55', '140,190,240'];
+                this.color = palettes[Math.floor(Math.random() * palettes.length)];
             }
 
             update() {
                 this.progress += this.speed;
-                
-                // Move from start to target
                 let currentX = lerp(this.startX, this.targetX, this.progress);
                 let currentY = lerp(this.startY, this.targetY, this.progress);
                 
-                // Add organic sine-wave turbulence to simulate wind/sand flow
-                currentX += Math.sin(this.progress * Math.PI * 2 + this.seed) * this.spread;
-                currentY += Math.cos(this.progress * Math.PI * 2 + this.seed) * (this.spread * 0.5);
+                currentX += Math.sin(this.progress * Math.PI * 3 + this.seed) * (this.spread * (1 - this.progress));
+                currentY += Math.cos(this.progress * Math.PI * 3 + this.seed) * (this.spread * 0.4);
                 
                 this.x = currentX;
                 this.y = currentY;
             }
 
             draw(ctx) {
-                // Fade in and fade out cleanly at ends of travel
-                let alpha = this.progress < 0.2 ? this.progress * 5 : (this.progress > 0.8 ? (1 - this.progress) * 5 : 1);
-                
+                let alpha = this.progress < 0.15 ? this.progress * 6 : (this.progress > 0.85 ? (1 - this.progress) * 6 : 0.8);
                 ctx.fillStyle = `rgba(${this.color}, ${alpha})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -617,28 +609,25 @@
             let vh = window.innerHeight;
 
             // --- Header Shredding Animation ---
-            // Stretches, skews, and blurs as you scroll down
-            let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.5), 1));
+            let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.45), 1));
             
             headerWrapper.style.opacity = 1 - (headerProgress * 1.5);
-            headerWrapper.style.filter = `blur(${headerProgress * 15}px)`;
-            // Skew, slight stretch, and upward drift creates the 'shredded' tear effect
-            headerWrapper.style.transform = `scaleY(${1 - (headerProgress * 0.5)}) scaleX(${1 + (headerProgress * 0.2)}) skewX(${headerProgress * 20}deg) translateY(${headerProgress * -80}px)`;
+            headerWrapper.style.filter = `blur(${headerProgress * 12}px)`;
+            headerWrapper.style.transform = `scaleY(${1 - (headerProgress * 0.4)}) scaleX(${1 + (headerProgress * 0.15)}) skewX(${headerProgress * 15}deg) translateY(${headerProgress * -70}px)`;
             headerWrapper.style.pointerEvents = headerProgress > 0.3 ? 'none' : 'auto'; 
 
-            // --- Card Visibility Update ---
-            // Track which cards are actively "transitioning" to use as sand targets
+            // --- Card Accumulation Logic ---
             let activeTargetCards = [];
             
             cards.forEach((card) => {
                 let rect = card.getBoundingClientRect();
                 
-                // Build cards as they enter bottom 20% of screen
-                let cardProgress = (vh - rect.top) / (vh * 0.2);
+                // Cards only materialize when sand reaches them (progress threshold 0.85 to 1.0)
+                let cardProgress = (vh - rect.top) / (vh * 0.18);
                 cardProgress = Math.max(0, Math.min(cardProgress, 1));
 
-                // Direct solid fade (no blur, no vertical sliding)
-                card.style.setProperty('--reveal-opacity', cardProgress);
+                // Strict card materialization: hidden until dust hits
+                card.style.setProperty('--reveal-opacity', cardProgress >= 0.9 ? 1 : 0);
                 card.style.setProperty('--reveal-scale', `${0.95 + cardProgress * 0.05}`);
 
                 if (cardProgress > 0 && cardProgress < 1) {
@@ -646,36 +635,29 @@
                 }
             });
 
-            // --- Bidirectional Swarm Logic ---
-            if (Math.abs(scrollDelta) > 1 && currentScrollY < vh * 1.5 && pCanvas.style.display !== 'none') {
+            // --- Fine Sand Swarm Stream ---
+            if (Math.abs(scrollDelta) > 0.5 && currentScrollY < vh * 1.4 && pCanvas.style.display !== 'none') {
                 let isDown = scrollDelta > 0;
-                let spawnCount = Math.min(Math.abs(scrollDelta) * 2.5, 100); 
-                
+                let spawnCount = Math.min(Math.abs(scrollDelta) * 2, 70); 
                 let hRect = headerWrapper.getBoundingClientRect();
                 
-                // Fallback targets if scrolling very fast
                 if (activeTargetCards.length === 0) {
                     activeTargetCards = cards.slice(0, 4).map(c => c.getBoundingClientRect());
                 }
 
                 for (let i = 0; i < spawnCount; i++) {
-                    // Pick a random transitioning card bounds
                     let tRect = activeTargetCards[Math.floor(Math.random() * activeTargetCards.length)];
                     
-                    // Pick random point inside Header bounds
                     let hX = hRect.left + Math.random() * hRect.width;
                     let hY = hRect.top + Math.random() * hRect.height;
                     
-                    // Pick random point inside Target Card bounds
                     let cX = tRect.left + Math.random() * tRect.width;
                     let cY = tRect.top + Math.random() * tRect.height;
                     
                     if (isDown) {
-                        // Header -> Cards
-                        particles.push(new SwarmParticle(hX, hY, cX, cY));
+                        particles.push(new FineSandParticle(hX, hY, cX, cY));
                     } else {
-                        // Cards -> Header
-                        particles.push(new SwarmParticle(cX, cY, hX, hY));
+                        particles.push(new FineSandParticle(cX, cY, hX, hY));
                     }
                 }
             }
