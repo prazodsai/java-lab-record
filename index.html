@@ -42,7 +42,7 @@
             min-height: 100vh;
         }
 
-        /* --- NEW: Moving Java Background Logo --- */
+        /* --- Moving Java Background Logo --- */
         .bg-java-logo {
             position: fixed;
             top: 50%;
@@ -119,20 +119,20 @@
             font-weight: 600;
         }
 
-        /* --- UPDATED: Grid layout for centered, aligned student info --- */
+        /* --- UPDATED: Grid layout for left-aligned student info --- */
         .student-info {
             font-size: 1rem;
             max-width: fit-content;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: auto 1fr;
             row-gap: 8px;
             column-gap: 15px;
         }
 
         .student-info .label {
             color: var(--text-muted);
-            text-align: right;
+            text-align: left;
         }
 
         .student-info .value {
