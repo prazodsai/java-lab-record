@@ -103,8 +103,25 @@
             animation: fadeInDown 1s ease-out;
         }
 
+        /* --- UPDATED: Header Wrappers for Parallel Alignment --- */
+        .header-wrapper {
+            display: inline-grid;
+            grid-template-columns: 1fr;
+            justify-items: start; /* Aligns contents to the left edge */
+            margin: 0 auto;
+        }
+
+        .title-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers course code under H1 */
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+
         h1 {
             font-size: 3rem;
+            margin-top: 0;
             margin-bottom: 0.5rem;
             letter-spacing: 3px;
             color: #ffffff;
@@ -114,20 +131,21 @@
         .course-code {
             font-size: 1.5rem;
             color: var(--accent);
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
             letter-spacing: 4px;
             font-weight: 600;
         }
 
-        /* --- UPDATED: Grid layout for left-aligned student info --- */
+        /* Grid layout for left-aligned student info */
         .student-info {
             font-size: 1rem;
-            max-width: fit-content;
-            margin: 0 auto;
             display: grid;
             grid-template-columns: auto 1fr;
             row-gap: 8px;
             column-gap: 15px;
+            /* Constrains the width to match the title exactly */
+            width: 0;
+            min-width: 100%;
         }
 
         .student-info .label {
@@ -139,6 +157,8 @@
             color: var(--text-main);
             font-weight: 600;
             text-align: left;
+            white-space: normal; /* Allows text to wrap */
+            word-wrap: break-word;
         }
 
         /* Main Container */
@@ -285,9 +305,13 @@
             .full-page-content .button-group {
                 flex-direction: column;
             }
+            .header-wrapper {
+                justify-items: center; /* Centers alignment on mobile screens */
+            }
             .student-info {
                 grid-template-columns: 1fr;
                 text-align: center;
+                width: 100%; 
             }
             .student-info .label, .student-info .value {
                 text-align: center;
@@ -367,21 +391,25 @@
     <div class="cursor-glow"></div>
 
     <header id="main-header">
-        <h1>Java Lab Record</h1>
-        <div class="course-code">24CS281</div>
-        <!-- UPDATED HTML for Grid Layout -->
-        <div class="student-info">
-            <span class="label">Name:</span>
-            <span class="value">M.PRAZOD SAI</span>
+        <div class="header-wrapper">
+            <div class="title-group">
+                <h1>Java Lab Record</h1>
+                <div class="course-code">24CS281</div>
+            </div>
             
-            <span class="label">Roll No:</span>
-            <span class="value">25EU02098</span>
-            
-            <span class="label">Institution:</span>
-            <span class="value">Siddhartha Academy of Higher Education</span>
-            
-            <span class="label">Instructor:</span>
-            <span class="value">Ramesh Sir</span>
+            <div class="student-info">
+                <span class="label">Name:</span>
+                <span class="value">M.PRAZOD SAI</span>
+                
+                <span class="label">Roll No:</span>
+                <span class="value">25EU02098</span>
+                
+                <span class="label">Institution:</span>
+                <span class="value">Siddhartha Academy of Higher Education</span>
+                
+                <span class="label">Instructor:</span>
+                <span class="value">Ramesh Sir</span>
+            </div>
         </div>
     </header>
 
