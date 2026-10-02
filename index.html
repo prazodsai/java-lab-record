@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Lab Record | M.PRAZOD SAI</title>
     <style>
-        /* Import Cinzel font from Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
         
         :root {
             --bg-dark: #0a0c10;
-            --bg-glass: rgba(255, 255, 255, 0.05); /* Transparent card background */
+            --bg-glass: rgba(255, 255, 255, 0.05); 
             --bg-glass-hover: rgba(255, 255, 255, 0.08);
-            --bg-concepts: rgba(0, 0, 0, 0.3); /* Inner transparent box */
-            --border-glass: rgba(255, 255, 255, 0.12); /* Glass edge border */
+            --bg-concepts: rgba(0, 0, 0, 0.3); 
+            --border-glass: rgba(255, 255, 255, 0.12); 
             --text-main: #ffffff;
             --text-muted: #b3b3b3;
             --accent: #4a90e2;
@@ -22,7 +21,6 @@
 
         body {
             background-color: var(--bg-dark);
-            /* Ambient radial gradients behind the glass cards */
             background-image: 
                 radial-gradient(circle at 15% 20%, rgba(74, 144, 226, 0.18) 0%, transparent 40%),
                 radial-gradient(circle at 85% 80%, rgba(74, 144, 226, 0.12) 0%, transparent 40%);
@@ -35,14 +33,12 @@
             line-height: 1.6;
             overflow-x: hidden;
             letter-spacing: 1px;
-
-            /* Keep footer at bottom */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* --- Moving Java Background Logo --- */
+        /* Moving Java Background Logo */
         .bg-java-logo {
             position: fixed;
             top: 50%;
@@ -51,10 +47,9 @@
             height: 800px;
             margin-top: -400px;
             margin-left: -400px;
-            opacity: 0.03; /* Extremely subtle so it doesn't distract */
+            opacity: 0.03; 
             z-index: 0;
             pointer-events: none;
-            /* Turns the colored logo into a monochrome, bright shape */
             filter: grayscale(100%) brightness(200%);
             animation: floatAndRotate 60s infinite ease-in-out;
             will-change: transform;
@@ -67,7 +62,7 @@
             100% { transform: translate(0, 0) rotate(0deg) scale(1); }
         }
 
-        /* --- ADAPTIVE: Softer, Ambient Cursor Glow --- */
+        /* Ambient Cursor Glow */
         .cursor-glow {
             position: fixed;
             top: 0;
@@ -76,7 +71,6 @@
             height: 650px; 
             margin-left: -325px; 
             margin-top: -325px;
-            /* Reduced core alpha to 0.12 for a subtle, adaptive ambient light */
             background: radial-gradient(circle, rgba(74, 144, 226, 0.12) 0%, rgba(74, 144, 226, 0.03) 40%, transparent 65%);
             border-radius: 50%;
             pointer-events: none; 
@@ -86,41 +80,57 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Ensure main layout sections sit above the background elements */
-        header, .container, footer {
-            position: relative;
-            z-index: 1;
+        /* Canvas Overlay for Scroll Particles */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1; 
         }
 
-        /* Header with Frosted Glass Effect */
-        header {
-            text-align: center;
-            padding: 4rem 1rem;
-            background: rgba(15, 18, 24, 0.6);
+        /* --- Full Screen Sticky Header for Dissolve Effect --- */
+        #main-header {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2; /* Sits above particles, below the scrolling grid */
+            pointer-events: none; /* Allows scrolling if mouse is over it */
+        }
+
+        .header-wrapper {
+            background: var(--bg-glass);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid var(--border-glass);
-            animation: fadeInDown 1s ease-out;
-        }
-
-        /* --- UPDATED: Header Wrappers for Parallel Alignment --- */
-        .header-wrapper {
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            padding: 50px 70px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
             display: inline-grid;
             grid-template-columns: 1fr;
-            justify-items: start; /* Aligns contents to the left edge */
+            justify-items: start;
             margin: 0 auto;
+            pointer-events: auto; /* Re-enable clicks inside the card */
+            
+            /* Prepare properties for JS scroll injection */
+            will-change: transform, opacity, filter;
         }
 
         .title-group {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centers course code under H1 */
+            align-items: center; 
             width: 100%;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-top: 0;
             margin-bottom: 0.5rem;
             letter-spacing: 3px;
@@ -136,14 +146,12 @@
             font-weight: 600;
         }
 
-        /* Grid layout for left-aligned student info */
         .student-info {
-            font-size: 1rem;
+            font-size: 1.1rem;
             display: grid;
             grid-template-columns: auto 1fr;
-            row-gap: 8px;
-            column-gap: 15px;
-            /* Constrains the width to match the title exactly */
+            row-gap: 12px;
+            column-gap: 20px;
             width: 0;
             min-width: 100%;
         }
@@ -157,59 +165,61 @@
             color: var(--text-main);
             font-weight: 600;
             text-align: left;
-            white-space: normal; /* Allows text to wrap */
+            white-space: normal; 
             word-wrap: break-word;
         }
 
-        /* Main Container */
+        /* --- Scrollable Content Container --- */
         .container {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 20px;
+            position: relative;
+            z-index: 3; /* Scrolls OVER the sticky header */
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 100px 20px;
             flex: 1;
             width: 100%;
             box-sizing: border-box;
         }
 
-        /* Grid for Weeks */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 25px;
+            /* Extra top padding so you have to scroll down to reveal cards */
+            padding-top: 15vh; 
         }
 
-        /* Compact Tile Styling */
+        /* Scroll-Linked Coalescing Cards */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 12px;
-            padding: 25px 15px;
+            padding: 30px 20px;
             border: 1px solid var(--border-glass);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
             text-align: center;
             cursor: pointer;
+            
+            /* CSS Variables fed by Scroll JS */
+            --reveal-opacity: 0;
+            --reveal-blur: 20px;
+            --reveal-y: 100px;
+            --reveal-scale: 0.85;
+            --hover-y: 0px;
+            
+            opacity: var(--reveal-opacity);
+            filter: blur(var(--reveal-blur));
+            transform: translateY(calc(var(--reveal-y) + var(--hover-y))) scale(var(--reveal-scale));
+            
+            /* Smooth transitions for hover AND fast scroll snapping */
+            transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, 
+                        transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        opacity 0.15s linear, 
+                        filter 0.15s linear;
         }
 
-        /* Staggered Animation Delays */
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.15s; }
-        .card:nth-child(3) { animation-delay: 0.2s; }
-        .card:nth-child(4) { animation-delay: 0.25s; }
-        .card:nth-child(5) { animation-delay: 0.3s; }
-        .card:nth-child(6) { animation-delay: 0.35s; }
-        .card:nth-child(7) { animation-delay: 0.4s; }
-        .card:nth-child(8) { animation-delay: 0.45s; }
-        .card:nth-child(9) { animation-delay: 0.5s; }
-        .card:nth-child(10) { animation-delay: 0.55s; }
-        .card:nth-child(11) { animation-delay: 0.6s; }
-
         .card:hover {
-            transform: translateY(-5px);
+            --hover-y: -8px; /* Hover overrides just this variable */
             background: var(--bg-glass-hover);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
             border-color: rgba(74, 144, 226, 0.5);
@@ -218,20 +228,23 @@
         .card h2 {
             margin: 0;
             color: var(--accent);
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             white-space: nowrap; 
             font-weight: 600;
         }
 
-        /* Hide details in grid view */
-        .week-details {
-            display: none;
-        }
+        .week-details { display: none; }
 
-        /* --- Full Page View Styling --- */
+        /* Full Page View */
         #full-page-view {
             display: none;
-            animation: fadeInUp 0.6s ease-out forwards;
+            padding-top: 10vh; /* Replaces header space when opened */
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .btn-back {
@@ -258,7 +271,6 @@
         .full-page-content {
             background: var(--bg-glass);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border-radius: 12px;
             padding: 40px;
             border: 1px solid var(--border-glass);
@@ -293,29 +305,11 @@
             line-height: 1.8;
         }
 
-        /* Button Layout in Full Page */
         .full-page-content .button-group {
             display: flex;
             flex-direction: row;
             gap: 20px;
             width: 100%;
-        }
-
-        @media (max-width: 600px) {
-            .full-page-content .button-group {
-                flex-direction: column;
-            }
-            .header-wrapper {
-                justify-items: center; /* Centers alignment on mobile screens */
-            }
-            .student-info {
-                grid-template-columns: 1fr;
-                text-align: center;
-                width: 100%; 
-            }
-            .student-info .label, .student-info .value {
-                text-align: center;
-            }
         }
 
         .btn {
@@ -354,18 +348,6 @@
             border-color: var(--accent);
         }
 
-        /* Keyframe Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Footer */
         footer {
             text-align: center;
             padding: 2rem;
@@ -373,12 +355,21 @@
             font-size: 0.8rem;
             background: rgba(15, 18, 24, 0.6);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
             border-top: 1px solid var(--border-glass);
-            margin-top: 3rem;
+            margin-top: auto;
             letter-spacing: 2px;
             width: 100%;
             box-sizing: border-box;
+            position: relative;
+            z-index: 3;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .header-wrapper { padding: 30px 20px; justify-items: center; }
+            .student-info { grid-template-columns: 1fr; text-align: center; width: 100%; }
+            .student-info .label, .student-info .value { text-align: center; }
+            .full-page-content .button-group { flex-direction: column; }
         }
     </style>
 </head>
@@ -387,26 +378,24 @@
     <!-- Moving Background Logo -->
     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java Background" class="bg-java-logo">
 
-    <!-- Ambient Cursor Glow Element -->
+    <!-- Ambient Cursor Glow & Canvas Particles -->
     <div class="cursor-glow"></div>
+    <canvas id="particle-canvas"></canvas>
 
+    <!-- Scroll Dissolve Hero Header -->
     <header id="main-header">
         <div class="header-wrapper">
             <div class="title-group">
                 <h1>Java Lab Record</h1>
                 <div class="course-code">24CS281</div>
             </div>
-            
             <div class="student-info">
                 <span class="label">Name:</span>
                 <span class="value">M.PRAZOD SAI</span>
-                
                 <span class="label">Roll No:</span>
                 <span class="value">25EU02098</span>
-                
                 <span class="label">Institution:</span>
                 <span class="value">Siddhartha Academy of Higher Education</span>
-                
                 <span class="label">Instructor:</span>
                 <span class="value">Ramesh Sir</span>
             </div>
@@ -418,7 +407,6 @@
         <!-- Grid View -->
         <div class="grid" id="main-grid">
             
-            <!-- Week 1 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 1</h2>
                 <div class="week-details">
@@ -433,7 +421,6 @@
                 </div>
             </div>
 
-            <!-- Week 2 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 2</h2>
                 <div class="week-details">
@@ -448,7 +435,6 @@
                 </div>
             </div>
 
-            <!-- Week 3 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 3</h2>
                 <div class="week-details">
@@ -463,7 +449,6 @@
                 </div>
             </div>
 
-            <!-- Week 4 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 4</h2>
                 <div class="week-details">
@@ -478,7 +463,6 @@
                 </div>
             </div>
 
-            <!-- Week 5 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 5</h2>
                 <div class="week-details">
@@ -493,7 +477,6 @@
                 </div>
             </div>
 
-            <!-- Week 6 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 6</h2>
                 <div class="week-details">
@@ -508,7 +491,6 @@
                 </div>
             </div>
 
-            <!-- Week 7 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 7</h2>
                 <div class="week-details">
@@ -523,7 +505,6 @@
                 </div>
             </div>
 
-            <!-- Week 8 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 8</h2>
                 <div class="week-details">
@@ -538,7 +519,6 @@
                 </div>
             </div>
 
-            <!-- Week 9 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 9</h2>
                 <div class="week-details">
@@ -553,7 +533,6 @@
                 </div>
             </div>
 
-            <!-- Week 10 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 10</h2>
                 <div class="week-details">
@@ -568,7 +547,6 @@
                 </div>
             </div>
 
-            <!-- Week 11 -->
             <div class="card" onclick="openWeek(this)">
                 <h2>Week 11</h2>
                 <div class="week-details">
@@ -600,7 +578,107 @@
 
     <!-- Scripts -->
     <script>
-        // Full Page Transition Logic
+        // --- 1. Dissolve & Reform Scroll Animation ---
+        const headerWrapper = document.querySelector('.header-wrapper');
+        const cards = document.querySelectorAll('.card');
+        let lastScrollY = window.scrollY;
+        
+        // Setup Canvas Particle System
+        const pCanvas = document.getElementById('particle-canvas');
+        const pCtx = pCanvas.getContext('2d');
+        
+        function resizeCanvas() {
+            pCanvas.width = window.innerWidth;
+            pCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        class Particle {
+            constructor(x, y) {
+                // Scatter spawn across header area
+                this.x = x + (Math.random() - 0.5) * window.innerWidth * 0.4; 
+                this.y = y + (Math.random() - 0.5) * 200; 
+                this.vx = (Math.random() - 0.5) * 4; // horizontal drift
+                this.vy = Math.random() * 8 + 4; // fast downward drift
+                this.life = 1;
+                this.decay = Math.random() * 0.02 + 0.015;
+                this.size = Math.random() * 3 + 1;
+                this.color = Math.random() > 0.5 ? '255, 255, 255' : '74, 144, 226';
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= this.decay;
+            }
+            draw(ctx) {
+                ctx.fillStyle = `rgba(${this.color}, ${this.life})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animateParticles() {
+            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+            for(let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw(pCtx);
+                if(particles[i].life <= 0) particles.splice(i, 1);
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        function handleScrollAnimations() {
+            let currentScrollY = window.scrollY;
+            let scrollDelta = currentScrollY - lastScrollY;
+            let vh = window.innerHeight;
+
+            // 1. Dissolve Header (fade out and blur as you scroll down 0 to 60vh)
+            let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.6), 1));
+            
+            headerWrapper.style.opacity = 1 - headerProgress;
+            headerWrapper.style.filter = `blur(${headerProgress * 15}px)`;
+            headerWrapper.style.transform = `translateY(${headerProgress * -150}px) scale(${1 + headerProgress * 0.15})`;
+            headerWrapper.style.pointerEvents = headerProgress > 0.5 ? 'none' : 'auto'; 
+
+            // 2. Emit Particles if actively scrolling down inside the transition zone
+            if (scrollDelta > 0 && currentScrollY < vh && headerProgress > 0 && headerProgress < 1) {
+                let spawnCount = Math.min(scrollDelta, 25); // burst volume
+                let hRect = headerWrapper.getBoundingClientRect();
+                
+                // Spawn from center of screen where header is
+                for(let i=0; i < spawnCount; i++) {
+                    particles.push(new Particle(window.innerWidth / 2, hRect.top + hRect.height / 2));
+                }
+            }
+
+            // 3. Reform Grid Cards (unblur and fade in as they slide up)
+            cards.forEach((card) => {
+                let rect = card.getBoundingClientRect();
+                let cardCenter = rect.top + rect.height / 2;
+                
+                // Progress: 0 when card is low, 1 when it hits 75% of screen height
+                let cardProgress = 1 - (cardCenter - vh * 0.75) / (vh * 0.25);
+                cardProgress = Math.max(0, Math.min(cardProgress, 1));
+
+                card.style.setProperty('--reveal-opacity', cardProgress);
+                card.style.setProperty('--reveal-blur', `${(1 - cardProgress) * 20}px`);
+                card.style.setProperty('--reveal-y', `${(1 - cardProgress) * 120}px`);
+                card.style.setProperty('--reveal-scale', `${0.85 + cardProgress * 0.15}`);
+            });
+
+            lastScrollY = currentScrollY;
+        }
+
+        window.addEventListener('scroll', handleScrollAnimations, { passive: true });
+        
+        // Initial setup trigger
+        setTimeout(handleScrollAnimations, 100);
+
+        // --- 2. Full Page Transition Logic ---
         const mainHeader = document.getElementById('main-header');
         const mainGrid = document.getElementById('main-grid');
         const fullPageView = document.getElementById('full-page-view');
@@ -616,41 +694,26 @@
             mainGrid.style.display = 'none';
             fullPageView.style.display = 'block';
             
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         function closeWeek() {
             fullPageView.style.display = 'none';
             mainGrid.style.display = 'grid';
-            mainHeader.style.display = 'block';
+            mainHeader.style.display = 'flex';
             
             fullPageContent.innerHTML = '';
+            handleScrollAnimations(); // reset layout calculation
         }
 
-        // Cursor Glow Logic
+        // --- 3. Cursor Glow Logic ---
         const cursorGlow = document.querySelector('.cursor-glow');
+        let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+        let glowX = mouseX, glowY = mouseY;
         
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let glowX = mouseX;
-        let glowY = mouseY;
-
-        // Optional: Fade out glow when mouse leaves the window
-        document.addEventListener('mouseleave', () => {
-            cursorGlow.style.opacity = '0';
-        });
-        
-        document.addEventListener('mouseenter', () => {
-            cursorGlow.style.opacity = '1';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        document.addEventListener('mouseleave', () => cursorGlow.style.opacity = '0');
+        document.addEventListener('mouseenter', () => cursorGlow.style.opacity = '1');
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
         function animateGlow() {
             glowX += (mouseX - glowX) * 0.15;
@@ -660,11 +723,7 @@
         }
         
         const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (!isTouchDevice) {
-            animateGlow();
-        } else {
-            cursorGlow.style.display = 'none';
-        }
+        if (!isTouchDevice) { animateGlow(); } else { cursorGlow.style.display = 'none'; }
     </script>
 </body>
 </html>
