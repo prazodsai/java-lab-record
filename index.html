@@ -80,7 +80,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Canvas Overlay for Scroll Particles */
+        /* Canvas Overlay for Sand Particles */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -89,9 +89,10 @@
             height: 100vh;
             pointer-events: none;
             z-index: 1; 
+            transition: opacity 0.3s ease;
         }
 
-        /* --- Full Screen Sticky Header for Dissolve Effect --- */
+        /* --- Full Screen Sticky Header --- */
         #main-header {
             position: sticky;
             top: 0;
@@ -99,19 +100,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2; /* Sits above particles, below the scrolling grid */
-            pointer-events: none; /* Allows scrolling if mouse is over it */
+            z-index: 2; 
+            pointer-events: none; 
         }
 
         .header-wrapper {
-            /* Removed background, borders, and padding */
             display: inline-grid;
             grid-template-columns: 1fr;
             justify-items: start;
             margin: 0 auto;
-            pointer-events: auto; /* Re-enable clicks inside the text area */
-            
-            /* Prepare properties for JS scroll injection */
+            pointer-events: auto; 
             will-change: transform, opacity, filter;
         }
 
@@ -166,7 +164,7 @@
         /* --- Scrollable Content Container --- */
         .container {
             position: relative;
-            z-index: 3; /* Scrolls OVER the sticky header */
+            z-index: 3; 
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 20px 100px 20px;
@@ -179,11 +177,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 25px;
-            /* Extra top padding so you have to scroll down to reveal cards */
             padding-top: 15vh; 
         }
 
-        /* Scroll-Linked Coalescing Cards */
+        /* Scroll-Linked Cards (No Blur) */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -196,24 +193,20 @@
             
             /* CSS Variables fed by Scroll JS */
             --reveal-opacity: 0;
-            --reveal-blur: 20px;
             --reveal-y: 100px;
-            --reveal-scale: 0.85;
+            --reveal-scale: 0.9;
             --hover-y: 0px;
             
             opacity: var(--reveal-opacity);
-            filter: blur(var(--reveal-blur));
             transform: translateY(calc(var(--reveal-y) + var(--hover-y))) scale(var(--reveal-scale));
             
-            /* Smooth transitions for hover AND fast scroll snapping */
             transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, 
                         transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                        opacity 0.15s linear, 
-                        filter 0.15s linear;
+                        opacity 0.15s linear;
         }
 
         .card:hover {
-            --hover-y: -8px; /* Hover overrides just this variable */
+            --hover-y: -8px; 
             background: var(--bg-glass-hover);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
             border-color: rgba(74, 144, 226, 0.5);
@@ -232,7 +225,7 @@
         /* Full Page View */
         #full-page-view {
             display: none;
-            padding-top: 10vh; /* Replaces header space when opened */
+            padding-top: 10vh; 
             animation: fadeIn 0.5s ease forwards;
         }
 
@@ -572,7 +565,7 @@
 
     <!-- Scripts -->
     <script>
-        // --- 1. Dissolve & Reform Scroll Animation ---
+        // --- 1. Bidirectional Fine Sand Scroll Animation ---
         const headerWrapper = document.querySelector('.header-wrapper');
         const cards = document.querySelectorAll('.card');
         let lastScrollY = window.scrollY;
@@ -590,20 +583,22 @@
 
         let particles = [];
         class Particle {
-            constructor(x, y) {
-                // Scatter spawn across header area
-                this.x = x + (Math.random() - 0.5) * window.innerWidth * 0.4; 
-                this.y = y + (Math.random() - 0.5) * 200; 
-                this.vx = (Math.random() - 0.5) * 4; // horizontal drift
-                this.vy = Math.random() * 8 + 4; // fast downward drift
+            constructor(x, y, vy) {
+                this.x = x + (Math.random() - 0.5) * Math.min(window.innerWidth * 0.8, 600); 
+                this.y = y + (Math.random() - 0.5) * 150; 
+                this.vx = (Math.random() - 0.5) * 2; 
+                this.vy = vy + (Math.random() - 0.5) * 1.5; 
                 this.life = 1;
                 this.decay = Math.random() * 0.02 + 0.015;
-                this.size = Math.random() * 3 + 1;
-                this.color = Math.random() > 0.5 ? '255, 255, 255' : '74, 144, 226';
+                // Fine sand sizing
+                this.size = Math.random() * 1.5 + 0.5; 
+                this.color = Math.random() > 0.7 ? '255, 255, 255' : '150, 200, 255'; 
             }
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
+                // Organic turbulence / wind effect
+                this.vx += Math.sin(this.y * 0.02) * 0.1;
                 this.life -= this.decay;
             }
             draw(ctx) {
@@ -630,46 +625,47 @@
             let scrollDelta = currentScrollY - lastScrollY;
             let vh = window.innerHeight;
 
-            // 1. Dissolve Header (fade out and blur as you scroll down 0 to 60vh)
+            // 1. Dissolve Header 
             let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.6), 1));
             
             headerWrapper.style.opacity = 1 - headerProgress;
-            headerWrapper.style.filter = `blur(${headerProgress * 15}px)`;
+            headerWrapper.style.filter = `blur(${headerProgress * 10}px)`;
             headerWrapper.style.transform = `translateY(${headerProgress * -150}px) scale(${1 + headerProgress * 0.15})`;
             headerWrapper.style.pointerEvents = headerProgress > 0.5 ? 'none' : 'auto'; 
 
-            // 2. Emit Particles if actively scrolling down inside the transition zone
-            if (scrollDelta > 0 && currentScrollY < vh && headerProgress > 0 && headerProgress < 1) {
-                let spawnCount = Math.min(scrollDelta, 25); // burst volume
+            // 2. Bidirectional Sand Emission
+            if (Math.abs(scrollDelta) > 0 && currentScrollY < vh * 1.2 && pCanvas.style.display !== 'none') {
+                // Dense sand volume based on scroll speed
+                let spawnCount = Math.min(Math.abs(scrollDelta) * 3, 150); 
                 let hRect = headerWrapper.getBoundingClientRect();
                 
-                // Spawn from center of screen where header is
-                for(let i=0; i < spawnCount; i++) {
-                    particles.push(new Particle(window.innerWidth / 2, hRect.top + hRect.height / 2));
+                let startY = scrollDelta > 0 
+                    ? hRect.top + hRect.height / 2 // Scrolling down: sand falls from header
+                    : vh * 0.8; // Scrolling up: sand flies up from grid area
+
+                for(let i = 0; i < spawnCount; i++) {
+                    // Positive vy = falling, Negative vy = flying up
+                    let vy = scrollDelta > 0 ? (Math.random() * 8 + 3) : -(Math.random() * 8 + 3);
+                    particles.push(new Particle(window.innerWidth / 2, startY, vy));
                 }
             }
 
-            // 3. Reform Grid Cards (unblur and fade in as they slide up)
+            // 3. Reform Grid Cards (Clean Slide & Fade, No Blur)
             cards.forEach((card) => {
                 let rect = card.getBoundingClientRect();
                 
-                // Calculates progress starting as soon as the card enters the bottom 15% of the screen.
-                // This ensures fast scrolls or items near the footer perfectly resolve.
                 let cardProgress = (vh - rect.top) / (vh * 0.15);
                 cardProgress = Math.max(0, Math.min(cardProgress, 1));
 
                 card.style.setProperty('--reveal-opacity', cardProgress);
-                card.style.setProperty('--reveal-blur', `${(1 - cardProgress) * 20}px`);
                 card.style.setProperty('--reveal-y', `${(1 - cardProgress) * 100}px`);
-                card.style.setProperty('--reveal-scale', `${0.85 + cardProgress * 0.15}`);
+                card.style.setProperty('--reveal-scale', `${0.9 + cardProgress * 0.1}`);
             });
 
             lastScrollY = currentScrollY;
         }
 
         window.addEventListener('scroll', handleScrollAnimations, { passive: true });
-        
-        // Initial setup trigger
         setTimeout(handleScrollAnimations, 100);
 
         // --- 2. Full Page Transition Logic ---
@@ -688,6 +684,10 @@
             mainGrid.style.display = 'none';
             fullPageView.style.display = 'block';
             
+            // Instantly hide canvas to prevent sand overlapping the opened document view
+            pCanvas.style.opacity = '0';
+            setTimeout(() => { pCanvas.style.display = 'none'; }, 300);
+            
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
@@ -697,7 +697,12 @@
             mainHeader.style.display = 'flex';
             
             fullPageContent.innerHTML = '';
-            handleScrollAnimations(); // reset layout calculation
+            
+            // Restore sand canvas
+            pCanvas.style.display = 'block';
+            setTimeout(() => { pCanvas.style.opacity = '1'; }, 10);
+            
+            handleScrollAnimations(); 
         }
 
         // --- 3. Cursor Glow Logic ---
