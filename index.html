@@ -119,19 +119,26 @@
             font-weight: 600;
         }
 
+        /* --- UPDATED: Grid layout for centered, aligned student info --- */
         .student-info {
             font-size: 1rem;
-            color: var(--text-muted);
-            max-width: 700px;
+            max-width: fit-content;
             margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            row-gap: 8px;
+            column-gap: 15px;
         }
 
-        .student-info strong {
+        .student-info .label {
+            color: var(--text-muted);
+            text-align: right;
+        }
+
+        .student-info .value {
             color: var(--text-main);
             font-weight: 600;
+            text-align: left;
         }
 
         /* Main Container */
@@ -278,6 +285,13 @@
             .full-page-content .button-group {
                 flex-direction: column;
             }
+            .student-info {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .student-info .label, .student-info .value {
+                text-align: center;
+            }
         }
 
         .btn {
@@ -355,11 +369,19 @@
     <header id="main-header">
         <h1>Java Lab Record</h1>
         <div class="course-code">24CS281</div>
+        <!-- UPDATED HTML for Grid Layout -->
         <div class="student-info">
-            <span>Name: <strong>M.PRAZOD SAI</strong></span>
-            <span>Roll No: <strong>25EU02098</strong></span>
-            <span>Institution: <strong>Siddhartha Academy of Higher Education</strong></span>
-            <span>Instructor: <strong>Ramesh Sir</strong></span>
+            <span class="label">Name:</span>
+            <span class="value">M.PRAZOD SAI</span>
+            
+            <span class="label">Roll No:</span>
+            <span class="value">25EU02098</span>
+            
+            <span class="label">Institution:</span>
+            <span class="value">Siddhartha Academy of Higher Education</span>
+            
+            <span class="label">Instructor:</span>
+            <span class="value">Ramesh Sir</span>
         </div>
     </header>
 
