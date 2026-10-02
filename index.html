@@ -32,7 +32,6 @@
             padding: 0;
             line-height: 1.6;
             overflow-x: hidden;
-            letter-spacing: 1px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -80,7 +79,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Canvas Overlay for Sand Particles */
+        /* Canvas Overlay for Swarming Sand Particles */
         #particle-canvas {
             position: fixed;
             top: 0;
@@ -92,7 +91,7 @@
             transition: opacity 0.3s ease;
         }
 
-        /* --- Full Screen Sticky Header --- */
+        /* --- Sticky Header --- */
         #main-header {
             position: sticky;
             top: 0;
@@ -110,7 +109,9 @@
             justify-items: start;
             margin: 0 auto;
             pointer-events: auto; 
-            will-change: transform, opacity, filter;
+            /* Transformation origin center for uniform shredding */
+            transform-origin: center center;
+            will-change: transform, opacity, filter, letter-spacing;
         }
 
         .title-group {
@@ -148,11 +149,7 @@
             min-width: 100%;
         }
 
-        .student-info .label {
-            color: var(--text-muted);
-            text-align: left;
-        }
-
+        .student-info .label { color: var(--text-muted); text-align: left; }
         .student-info .value {
             color: var(--text-main);
             font-weight: 600;
@@ -177,10 +174,10 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 25px;
-            padding-top: 15vh; 
+            padding-top: 25vh; /* Pushed down slightly to give sand travel time */
         }
 
-        /* Scroll-Linked Cards (No Blur) */
+        /* Scroll-Linked Cards (Solid Formation, No Blur) */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
@@ -191,18 +188,16 @@
             text-align: center;
             cursor: pointer;
             
-            /* CSS Variables fed by Scroll JS */
+            /* CSS Variables updated strictly via Scroll JS */
             --reveal-opacity: 0;
-            --reveal-y: 100px;
-            --reveal-scale: 0.9;
+            --reveal-scale: 0.95;
             --hover-y: 0px;
             
             opacity: var(--reveal-opacity);
-            transform: translateY(calc(var(--reveal-y) + var(--hover-y))) scale(var(--reveal-scale));
+            transform: translateY(var(--hover-y)) scale(var(--reveal-scale));
             
             transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, 
-                        transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                        opacity 0.15s linear;
+                        transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .card:hover {
@@ -275,13 +270,7 @@
             font-weight: 700;
         }
 
-        .full-page-content p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 25px;
-            line-height: 1.8;
-        }
-
+        .full-page-content p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.8; }
         .full-page-content .concepts {
             font-size: 1rem;
             background: var(--bg-concepts);
@@ -292,13 +281,8 @@
             line-height: 1.8;
         }
 
-        .full-page-content .button-group {
-            display: flex;
-            flex-direction: row;
-            gap: 20px;
-            width: 100%;
-        }
-
+        .full-page-content .button-group { display: flex; flex-direction: row; gap: 20px; width: 100%; }
+        
         .btn {
             display: block;
             flex: 1;
@@ -316,24 +300,9 @@
             font-family: 'Cinzel', serif;
             font-weight: 600;
         }
-
-        .btn:hover {
-            background-color: var(--accent-hover);
-            border-color: var(--accent-hover);
-            box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
-            color: var(--accent);
-            border-color: rgba(74, 144, 226, 0.4);
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(74, 144, 226, 0.15);
-            color: #ffffff;
-            border-color: var(--accent);
-        }
+        .btn:hover { background-color: var(--accent-hover); border-color: var(--accent-hover); box-shadow: 0 0 20px rgba(74, 144, 226, 0.5); }
+        .btn-secondary { background-color: transparent; color: var(--accent); border-color: rgba(74, 144, 226, 0.4); }
+        .btn-secondary:hover { background-color: rgba(74, 144, 226, 0.15); color: #ffffff; border-color: var(--accent); }
 
         footer {
             text-align: center;
@@ -369,7 +338,7 @@
     <div class="cursor-glow"></div>
     <canvas id="particle-canvas"></canvas>
 
-    <!-- Scroll Dissolve Hero Header -->
+    <!-- Scroll Shred/Dissolve Hero Header -->
     <header id="main-header">
         <div class="header-wrapper">
             <div class="title-group">
@@ -565,12 +534,11 @@
 
     <!-- Scripts -->
     <script>
-        // --- 1. Bidirectional Fine Sand Scroll Animation ---
+        // --- 1. Target-Interpolated Swarm Engine ---
         const headerWrapper = document.querySelector('.header-wrapper');
-        const cards = document.querySelectorAll('.card');
+        const cards = Array.from(document.querySelectorAll('.card'));
         let lastScrollY = window.scrollY;
         
-        // Setup Canvas Particle System
         const pCanvas = document.getElementById('particle-canvas');
         const pCtx = pCanvas.getContext('2d');
         
@@ -582,27 +550,48 @@
         resizeCanvas();
 
         let particles = [];
-        class Particle {
-            constructor(x, y, vy) {
-                this.x = x + (Math.random() - 0.5) * Math.min(window.innerWidth * 0.8, 600); 
-                this.y = y + (Math.random() - 0.5) * 150; 
-                this.vx = (Math.random() - 0.5) * 2; 
-                this.vy = vy + (Math.random() - 0.5) * 1.5; 
-                this.life = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
-                // Fine sand sizing
-                this.size = Math.random() * 1.5 + 0.5; 
-                this.color = Math.random() > 0.7 ? '255, 255, 255' : '150, 200, 255'; 
+
+        // Linear interpolation function
+        const lerp = (start, end, amt) => (1 - amt) * start + amt * end;
+
+        class SwarmParticle {
+            constructor(startX, startY, targetX, targetY) {
+                this.startX = startX;
+                this.startY = startY;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                
+                this.progress = 0; // 0 to 1 life cycle
+                this.speed = Math.random() * 0.015 + 0.01; // Travel speed
+                
+                // Turbulence properties for sweeping sand effect
+                this.seed = Math.random() * 100;
+                this.spread = Math.random() * 120 + 30; // How wide they loop around
+                
+                this.size = Math.random() * 2 + 0.8;
+                this.color = Math.random() > 0.6 ? '255,255,255' : '74,144,226';
             }
+
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                // Organic turbulence / wind effect
-                this.vx += Math.sin(this.y * 0.02) * 0.1;
-                this.life -= this.decay;
+                this.progress += this.speed;
+                
+                // Move from start to target
+                let currentX = lerp(this.startX, this.targetX, this.progress);
+                let currentY = lerp(this.startY, this.targetY, this.progress);
+                
+                // Add organic sine-wave turbulence to simulate wind/sand flow
+                currentX += Math.sin(this.progress * Math.PI * 2 + this.seed) * this.spread;
+                currentY += Math.cos(this.progress * Math.PI * 2 + this.seed) * (this.spread * 0.5);
+                
+                this.x = currentX;
+                this.y = currentY;
             }
+
             draw(ctx) {
-                ctx.fillStyle = `rgba(${this.color}, ${this.life})`;
+                // Fade in and fade out cleanly at ends of travel
+                let alpha = this.progress < 0.2 ? this.progress * 5 : (this.progress > 0.8 ? (1 - this.progress) * 5 : 1);
+                
+                ctx.fillStyle = `rgba(${this.color}, ${alpha})`;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -611,10 +600,12 @@
 
         function animateParticles() {
             pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-            for(let i = particles.length - 1; i >= 0; i--) {
+            for (let i = particles.length - 1; i >= 0; i--) {
                 particles[i].update();
                 particles[i].draw(pCtx);
-                if(particles[i].life <= 0) particles.splice(i, 1);
+                if (particles[i].progress >= 1) {
+                    particles.splice(i, 1);
+                }
             }
             requestAnimationFrame(animateParticles);
         }
@@ -625,42 +616,69 @@
             let scrollDelta = currentScrollY - lastScrollY;
             let vh = window.innerHeight;
 
-            // 1. Dissolve Header 
-            let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.6), 1));
+            // --- Header Shredding Animation ---
+            // Stretches, skews, and blurs as you scroll down
+            let headerProgress = Math.max(0, Math.min(currentScrollY / (vh * 0.5), 1));
             
-            headerWrapper.style.opacity = 1 - headerProgress;
-            headerWrapper.style.filter = `blur(${headerProgress * 10}px)`;
-            headerWrapper.style.transform = `translateY(${headerProgress * -150}px) scale(${1 + headerProgress * 0.15})`;
-            headerWrapper.style.pointerEvents = headerProgress > 0.5 ? 'none' : 'auto'; 
+            headerWrapper.style.opacity = 1 - (headerProgress * 1.5);
+            headerWrapper.style.filter = `blur(${headerProgress * 15}px)`;
+            // Skew, slight stretch, and upward drift creates the 'shredded' tear effect
+            headerWrapper.style.transform = `scaleY(${1 - (headerProgress * 0.5)}) scaleX(${1 + (headerProgress * 0.2)}) skewX(${headerProgress * 20}deg) translateY(${headerProgress * -80}px)`;
+            headerWrapper.style.pointerEvents = headerProgress > 0.3 ? 'none' : 'auto'; 
 
-            // 2. Bidirectional Sand Emission
-            if (Math.abs(scrollDelta) > 0 && currentScrollY < vh * 1.2 && pCanvas.style.display !== 'none') {
-                // Dense sand volume based on scroll speed
-                let spawnCount = Math.min(Math.abs(scrollDelta) * 3, 150); 
-                let hRect = headerWrapper.getBoundingClientRect();
-                
-                let startY = scrollDelta > 0 
-                    ? hRect.top + hRect.height / 2 // Scrolling down: sand falls from header
-                    : vh * 0.8; // Scrolling up: sand flies up from grid area
-
-                for(let i = 0; i < spawnCount; i++) {
-                    // Positive vy = falling, Negative vy = flying up
-                    let vy = scrollDelta > 0 ? (Math.random() * 8 + 3) : -(Math.random() * 8 + 3);
-                    particles.push(new Particle(window.innerWidth / 2, startY, vy));
-                }
-            }
-
-            // 3. Reform Grid Cards (Clean Slide & Fade, No Blur)
+            // --- Card Visibility Update ---
+            // Track which cards are actively "transitioning" to use as sand targets
+            let activeTargetCards = [];
+            
             cards.forEach((card) => {
                 let rect = card.getBoundingClientRect();
                 
-                let cardProgress = (vh - rect.top) / (vh * 0.15);
+                // Build cards as they enter bottom 20% of screen
+                let cardProgress = (vh - rect.top) / (vh * 0.2);
                 cardProgress = Math.max(0, Math.min(cardProgress, 1));
 
+                // Direct solid fade (no blur, no vertical sliding)
                 card.style.setProperty('--reveal-opacity', cardProgress);
-                card.style.setProperty('--reveal-y', `${(1 - cardProgress) * 100}px`);
-                card.style.setProperty('--reveal-scale', `${0.9 + cardProgress * 0.1}`);
+                card.style.setProperty('--reveal-scale', `${0.95 + cardProgress * 0.05}`);
+
+                if (cardProgress > 0 && cardProgress < 1) {
+                    activeTargetCards.push(rect);
+                }
             });
+
+            // --- Bidirectional Swarm Logic ---
+            if (Math.abs(scrollDelta) > 1 && currentScrollY < vh * 1.5 && pCanvas.style.display !== 'none') {
+                let isDown = scrollDelta > 0;
+                let spawnCount = Math.min(Math.abs(scrollDelta) * 2.5, 100); 
+                
+                let hRect = headerWrapper.getBoundingClientRect();
+                
+                // Fallback targets if scrolling very fast
+                if (activeTargetCards.length === 0) {
+                    activeTargetCards = cards.slice(0, 4).map(c => c.getBoundingClientRect());
+                }
+
+                for (let i = 0; i < spawnCount; i++) {
+                    // Pick a random transitioning card bounds
+                    let tRect = activeTargetCards[Math.floor(Math.random() * activeTargetCards.length)];
+                    
+                    // Pick random point inside Header bounds
+                    let hX = hRect.left + Math.random() * hRect.width;
+                    let hY = hRect.top + Math.random() * hRect.height;
+                    
+                    // Pick random point inside Target Card bounds
+                    let cX = tRect.left + Math.random() * tRect.width;
+                    let cY = tRect.top + Math.random() * tRect.height;
+                    
+                    if (isDown) {
+                        // Header -> Cards
+                        particles.push(new SwarmParticle(hX, hY, cX, cY));
+                    } else {
+                        // Cards -> Header
+                        particles.push(new SwarmParticle(cX, cY, hX, hY));
+                    }
+                }
+            }
 
             lastScrollY = currentScrollY;
         }
@@ -684,9 +702,8 @@
             mainGrid.style.display = 'none';
             fullPageView.style.display = 'block';
             
-            // Instantly hide canvas to prevent sand overlapping the opened document view
             pCanvas.style.opacity = '0';
-            setTimeout(() => { pCanvas.style.display = 'none'; }, 300);
+            setTimeout(() => { pCanvas.style.display = 'none'; particles = []; }, 300);
             
             window.scrollTo({ top: 0, behavior: 'instant' });
         }
@@ -698,7 +715,6 @@
             
             fullPageContent.innerHTML = '';
             
-            // Restore sand canvas
             pCanvas.style.display = 'block';
             setTimeout(() => { pCanvas.style.opacity = '1'; }, 10);
             
