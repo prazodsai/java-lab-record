@@ -300,6 +300,14 @@
             line-height: 1.8;
         }
 
+        .full-page-content .aim-glow {
+            animation: aimGlow 2s ease-out;
+        }
+
+        @keyframes aimGlow {
+            0%, 100% { text-shadow: none; }
+            20%, 65% { text-shadow: 0 0 8px var(--accent), 0 0 20px rgba(240, 106, 79, 0.7); }
+        }
         .full-page-content .concepts {
             font-size: 1rem;
             background: var(--bg-concepts);
@@ -643,6 +651,8 @@
             const detailsHtml = element.querySelector('.week-details').innerHTML;
             
             fullPageContent.innerHTML = `<h2>${title}</h2>${detailsHtml}`;
+            const aimText = [...fullPageContent.querySelectorAll("p")].find(paragraph => paragraph.querySelector("strong")?.textContent.trim().startsWith("Aim:"));
+            aimText?.classList.add("aim-glow");
             
             mainHeader.style.display = 'none';
             mainGrid.style.display = 'none';
