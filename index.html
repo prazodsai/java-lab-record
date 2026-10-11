@@ -9,23 +9,23 @@
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
         
         :root {
-            --bg-dark: #0a0c10;
-            --bg-glass: rgba(255, 255, 255, 0.05); /* Transparent card background */
-            --bg-glass-hover: rgba(255, 255, 255, 0.08);
-            --bg-concepts: rgba(0, 0, 0, 0.3); /* Inner transparent box */
-            --border-glass: rgba(255, 255, 255, 0.12); /* Glass edge border */
-            --text-main: #ffffff;
-            --text-muted: #b3b3b3;
-            --accent: #4a90e2;
-            --accent-hover: #357abd;
+            --bg-dark: #09070f;
+            --bg-glass: rgba(25, 17, 38, 0.82); /* Transparent card background */
+            --bg-glass-hover: rgba(39, 25, 58, 0.96);
+            --bg-concepts: rgba(10, 7, 16, 0.72); /* Inner transparent box */
+            --border-glass: rgba(174, 120, 255, 0.24); /* Glass edge border */
+            --text-main: #f2ecff;
+            --text-muted: #b8a9ca;
+            --accent: #b47aff;
+            --accent-hover: #9551e8;
         }
 
         body {
             background-color: var(--bg-dark);
             /* Ambient radial gradients behind the glass cards */
             background-image: 
-                radial-gradient(circle at 15% 20%, rgba(74, 144, 226, 0.18) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(74, 144, 226, 0.12) 0%, transparent 40%);
+                radial-gradient(circle at 15% 20%, rgba(132, 67, 220, 0.22) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(132, 67, 220, 0.15) 0%, transparent 40%);
             background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Cinzel', serif;
@@ -77,7 +77,7 @@
             margin-left: -325px; 
             margin-top: -325px;
             /* Reduced core alpha to 0.12 for a subtle, adaptive ambient light */
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.12) 0%, rgba(74, 144, 226, 0.03) 40%, transparent 65%);
+            background: radial-gradient(circle, rgba(132, 67, 220, 0.15) 0%, rgba(132, 67, 220, 0.04) 40%, transparent 65%);
             border-radius: 50%;
             pointer-events: none; 
             z-index: 0; 
@@ -96,7 +96,7 @@
         header {
             text-align: center;
             padding: 4rem 1rem;
-            background: rgba(15, 18, 24, 0.6);
+            background: rgba(14, 10, 21, 0.92);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-bottom: 1px solid var(--border-glass);
@@ -186,7 +186,7 @@
             border-radius: 12px;
             padding: 25px 15px;
             border: 1px solid var(--border-glass);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.38);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
             animation: fadeInUp 0.8s ease-out forwards;
             opacity: 0;
@@ -212,8 +212,8 @@
         .card:hover {
             transform: translateY(-5px);
             background: var(--bg-glass-hover);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-            border-color: rgba(74, 144, 226, 0.5);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.58);
+            border-color: rgba(180, 122, 255, 0.42);
         }
 
         .card h2 {
@@ -253,7 +253,7 @@
         .btn-back:hover {
             color: #fff;
             border-color: var(--accent);
-            background: rgba(74, 144, 226, 0.1);
+            background: rgba(180, 122, 255, 0.12);
         }
 
         .full-page-content {
@@ -263,7 +263,7 @@
             border-radius: 12px;
             padding: 40px;
             border: 1px solid var(--border-glass);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.48);
         }
 
         .full-page-content h2 {
@@ -340,17 +340,17 @@
         .btn:hover {
             background-color: var(--accent-hover);
             border-color: var(--accent-hover);
-            box-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+            box-shadow: 0 0 20px rgba(180, 122, 255, 0.42);
         }
 
         .btn-secondary {
             background-color: transparent;
             color: var(--accent);
-            border-color: rgba(74, 144, 226, 0.4);
+            border-color: rgba(180, 122, 255, 0.42);
         }
 
         .btn-secondary:hover {
-            background-color: rgba(74, 144, 226, 0.15);
+            background-color: rgba(180, 122, 255, 0.16);
             color: #ffffff;
             border-color: var(--accent);
         }
@@ -372,7 +372,7 @@
             padding: 2rem;
             color: var(--text-muted);
             font-size: 0.8rem;
-            background: rgba(15, 18, 24, 0.6);
+            background: rgba(14, 10, 21, 0.92);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-top: 1px solid var(--border-glass);
